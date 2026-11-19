@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mama Mueni Supermarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">MM</span>
+    <div>
+      <h1>Mama Mueni Supermarket</h1>
+      <p>Fresh groceries. Fair prices.</p>
+    </div>
+  </div>
+  <nav>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#inventory">Inventory</a>
+    <a href="#sales">Sales</a>
+    <a href="#history">History</a>
+  </nav>
+  <span id="syncState" class="sync off">Connecting...</span>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard">
+    <h2>Shop at a glance</h2>
+    <div class="stats">
+      <div class="stat"><span>Items in shop</span><strong id="stItems">0</strong></div>
+      <div class="stat"><span>Stock value (cost)</span><strong id="stCost">0</strong></div>
+      <div class="stat"><span>Stock value (selling)</span><strong id="stRetail">0</strong></div>
+      <div class="stat"><span>Expected profit</span><strong id="stProfit">0</strong></div>
+      <div class="stat warn"><span>Low or out of stock</span><strong id="stLow">0</strong></div>
+      <div class="stat good"><span>Total sales</span><strong id="stSales">0</strong></div>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section id="inventory">
+    <div class="section-head">
+      <h2>Inventory</h2>
+      <button class="btn primary" id="addBtn">Add item</button>
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search items" aria-label="Search items">
+      <select id="filterCat" aria-label="Filter by category"></select>
+      <select id="filterStatus" aria-label="Filter by stock status">
+        <option value="">All stock levels</option>
+        <option value="ok">In stock</option>
+        <option value="low">Low stock</option>
+        <option value="out">Out of stock</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th><th>Category</th><th class="num">Cost</th><th class="num">Price</th>
+            <th class="num">Profit each</th><th class="num">Qty</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="itemRows"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="emptyMsg" hidden>No items match. Clear the search or add a new item.</p>
+    <div class="import" id="importBox" hidden>
+      <p>This device has items saved from the old version.</p>
+      <button class="btn primary" id="importBtn">Move them to the cloud</button>
+    </div>
+  </section>
+
+  <!-- SALES -->
+  <section id="sales">
+    <h2>New sale</h2>
+    <div class="sale-grid">
+      <div class="panel">
+        <label for="saleItem">Item</label>
+        <select id="saleItem"></select>
+        <label for="saleQty">Quantity</label>
+        <input type="number" id="saleQty" min="1" value="1">
+        <button class="btn primary" id="addToCart">Add to cart</button>
+      </div>
+      <div class="panel">
+        <h3>Cart</h3>
+        <ul id="cartList" class="cart"></ul>
+        <div class="total-row"><span>Total</span><strong id="cartTotal">KSh 0</strong></div>
+        <div class="row-actions">
+          <button class="btn ghost" id="clearCart">Clear cart</button>
+          <button class="btn primary" id="checkout">Complete sale</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="history">
+    <div class="section-head">
+      <h2>Sales history</h2>
+      <button class="btn ghost" id="clearSales">Clear history</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Items sold</th><th class="num">Total</th><th class="num">Profit</th></tr></thead>
+        <tbody id="salesRows"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="noSales">No sales yet. Completed sales will appear here.</p>
+  </section>
+
+</main>
+
+<!-- ADD / EDIT DIALOG -->
+<dialog id="itemDialog">
+  <form id="itemForm">
+    <h3 id="dialogTitle">Add item</h3>
+    <label for="fName">Item name</label>
+    <input id="fName" required>
+    <label for="fCat">Category</label>
+    <input id="fCat" list="catList" required>
+    <datalist id="catList"></datalist>
+    <div class="two">
+      <div><label for="fCost">Cost price (KSh)</label><input type="number" id="fCost" min="0" step="0.5" required></div>
+      <div><label for="fPrice">Selling price (KSh)</label><input type="number" id="fPrice" min="0" step="0.5" required></div>
+    </div>
+    <div class="two">
+      <div><label for="fQty">Quantity</label><input type="number" id="fQty" min="0" required></div>
+      <div><label for="fMin">Low-stock alert at</label><input type="number" id="fMin" min="0" value="10" required></div>
+    </div>
+    <p class="error" id="formError" hidden></p>
+    <div class="row-actions">
+      <button type="button" class="btn ghost" id="cancelBtn">Cancel</button>
+      <button type="submit" class="btn primary">Save item</button>
+    </div>
+  </form>
+</dialog>
+
+<footer>
+  <p>Mama Mueni Supermarket. Prices in Kenya shillings (KSh).</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ---------- 1. PASTE YOUR FIREBASE SETTINGS HERE ---------- */
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID",
+  storageBucket: "PASTE_PROJECT_ID.appspot.com",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId: "PASTE_APP_ID"
+};
+
+/* ---------- 2. Helpers ---------- */
+const $ = id => document.getElementById(id);
+const kes = n => 'KSh ' + Number(n).toLocaleString('en-KE', {maximumFractionDigits: 2});
+const status = i => i.qty <= 0 ? 'out' : (i.qty <= i.min ? 'low' : 'ok');
+const statusText = {ok: 'In stock', low: 'Low stock', out: 'Out of stock'};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let items = [], sales = [], cart = [], editingId = null;
+let db, itemsCol, salesCol, FV;
+
+function setSync(text, ok) {
+  $('syncState').textContent = text;
+  $('syncState').className = 'sync ' + (ok ? 'on' : 'off');
+}
+function showBanner(msg) { $('banner').textContent = msg; $('banner').hidden = false; }
+function onErr(e) {
+  setSync('Not synced', false);
+  showBanner(e.code === 'permission-denied'
+    ? 'The database refused access. Check your Firestore rules in the Firebase console.'
+    : 'Could not reach the database: ' + e.message);
+}
+
+/* ---------- 3. Connect and listen for live changes ---------- */
+function startCloud() {
+  if (firebaseConfig.apiKey.startsWith('PASTE')) {
+    setSync('Not connected', false);
+    showBanner('Add your Firebase settings at the top of the script so your data saves to all devices.');
+    return;
+  }
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  FV = firebase.firestore.FieldValue;
+  itemsCol = db.collection('items');
+  salesCol = db.collection('sales');
+
+  itemsCol.onSnapshot(snap => {
+    items = snap.docs.map(d => ({id: d.id, ...d.data()}))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    setSync('Synced', true);
+    $('banner').hidden = true;
+    renderAll();
+  }, onErr);
+
+  salesCol.orderBy('at').onSnapshot(snap => {
+    sales = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    renderStats(); renderSales();
+  }, onErr);
+}
+
+/* ---------- 4. Render ---------- */
+function renderStats() {
+  $('stItems').textContent = items.length;
+  $('stCost').textContent = kes(items.reduce((s, i) => s + i.cost * i.qty, 0));
+  $('stRetail').textContent = kes(items.reduce((s, i) => s + i.price * i.qty, 0));
+  $('stProfit').textContent = kes(items.reduce((s, i) => s + (i.price - i.cost) * i.qty, 0));
+  $('stLow').textContent = items.filter(i => status(i) !== 'ok').length;
+  $('stSales').textContent = kes(sales.reduce((s, x) => s + x.total, 0));
+}
+
+function renderFilters() {
+  const cats = [...new Set(items.map(i => i.cat))].sort();
+  const current = $('filterCat').value;
+  $('filterCat').innerHTML = '<option value="">All categories</option>' +
+    cats.map(c => `<option>${esc(c)}</option>`).join('');
+  $('filterCat').value = cats.includes(current) ? current : '';
+  $('catList').innerHTML = cats.map(c => `<option value="${esc(c)}">`).join('');
+}
+
+function localItems() {
+  try { return JSON.parse(localStorage.getItem('mm_items')) || []; } catch (e) { return []; }
+}
+
+function renderItems() {
+  const q = $('search').value.trim().toLowerCase();
+  const cat = $('filterCat').value, st = $('filterStatus').value;
+  const list = items.filter(i =>
+    (!q || i.name.toLowerCase().includes(q)) &&
+    (!cat || i.cat === cat) && (!st || status(i) === st));
+  $('itemRows').innerHTML = list.map(i => `
+    <tr>
+      <td><strong>${esc(i.name)}</strong></td>
+      <td>${esc(i.cat)}</td>
+      <td class="num">${kes(i.cost)}</td>
+      <td class="num">${kes(i.price)}</td>
+      <td class="num">${kes(i.price - i.cost)}</td>
+      <td class="num">${i.qty}</td>
+      <td><span class="badge ${status(i)}">${statusText[status(i)]}</span></td>
+      <td class="actions">
+        <button class="link" data-act="restock" data-id="${i.id}">Restock</button>
+        <button class="link" data-act="edit" data-id="${i.id}">Edit</button>
+        <button class="link danger" data-act="delete" data-id="${i.id}">Delete</button>
+      </td>
+    </tr>`).join('');
+  $('emptyMsg').hidden = list.length > 0;
+  $('importBox').hidden = !(items.length === 0 && localItems().length > 0);
+}
+
+function renderSaleSelect() {
+  const keep = $('saleItem').value;
+  const available = items.filter(i => i.qty > 0);
+  $('saleItem').innerHTML = available.length
+    ? available.map(i => `<option value="${i.id}">${esc(i.name)} (${kes(i.price)}, ${i.qty} left)</option>`).join('')
+    : '<option value="">Nothing in stock</option>';
+  if (available.some(i => i.id === keep)) $('saleItem').value = keep;
+}
+
+function renderCart() {
+  $('cartList').innerHTML = cart.length ? cart.map((c, idx) => `
+    <li><span>${c.qty} x ${esc(c.name)}</span><span>${kes(c.qty * c.price)}
+    <button class="link danger" data-remove="${idx}">Remove</button></span></li>`).join('')
+    : '<li class="muted">The cart is empty. Pick an item and add it.</li>';
+  $('cartTotal').textContent = kes(cart.reduce((s, c) => s + c.qty * c.price, 0));
+}
+
+function renderSales() {
+  $('salesRows').innerHTML = sales.slice().reverse().map(s => `
+    <tr><td>${esc(s.date)}</td>
+    <td>${s.lines.map(l => `${l.qty} x ${esc(l.name)}`).join(', ')}</td>
+    <td class="num">${kes(s.total)}</td><td class="num">${kes(s.profit)}</td></tr>`).join('');
+  $('noSales').hidden = sales.length > 0;
+}
+
+function renderAll() {
+  renderStats(); renderFilters(); renderItems(); renderSaleSelect(); renderCart(); renderSales();
+}
+
+/* ---------- 5. Add / edit item ---------- */
+function openDialog(item) {
+  editingId = item ? item.id : null;
+  $('dialogTitle').textContent = item ? 'Edit item' : 'Add item';
+  $('fName').value = item ? item.name : '';
+  $('fCat').value = item ? item.cat : '';
+  $('fCost').value = item ? item.cost : '';
+  $('fPrice').value = item ? item.price : '';
+  $('fQty').value = item ? item.qty : '';
+  $('fMin').value = item ? item.min : 10;
+  $('formError').hidden = true;
+  $('itemDialog').showModal();
+}
+
+$('addBtn').onclick = () => openDialog(null);
+$('cancelBtn').onclick = () => $('itemDialog').close();
+
+$('itemForm').onsubmit = e => {
+  e.preventDefault();
+  if (!db) { alert('Connect Firebase first so your changes can be saved.'); return; }
+  const data = {
+    name: $('fName').value.trim(), cat: $('fCat').value.trim(),
+    cost: parseFloat($('fCost').value), price: parseFloat($('fPrice').value),
+    qty: parseInt($('fQty').value, 10), min: parseInt($('fMin').value, 10)
+  };
+  if (data.price < data.cost) {
+    $('formError').textContent = 'The selling price is lower than the cost price. Check both prices.';
+    $('formError').hidden = false;
+    return;
+  }
+  const ref = editingId ? itemsCol.doc(editingId) : itemsCol.doc();
+  ref.set(data, {merge: true}).catch(onErr);
+  $('itemDialog').close();
+};
+
+/* ---------- 6. Table actions ---------- */
+$('itemRows').onclick = e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const item = items.find(i => i.id === b.dataset.id);
+  if (!item) return;
+  if (b.dataset.act === 'edit') openDialog(item);
+  if (b.dataset.act === 'delete' && confirm(`Delete "${item.name}"? This cannot be undone.`)) {
+    cart = cart.filter(c => c.id !== item.id);
+    itemsCol.doc(item.id).delete().catch(onErr);
+    renderCart();
+  }
+  if (b.dataset.act === 'restock') {
+    const n = parseInt(prompt(`How many units of "${item.name}" did you receive?`, '10'), 10);
+    if (n > 0) itemsCol.doc(item.id).update({qty: FV.increment(n)}).catch(onErr);
+  }
+};
+
+['search', 'filterCat', 'filterStatus'].forEach(id => $(id).addEventListener('input', renderItems));
+
+/* ---------- 7. Sales ---------- */
+$('addToCart').onclick = () => {
+  const item = items.find(i => i.id === $('saleItem').value);
+  const qty = parseInt($('saleQty').value, 10);
+  if (!item || !(qty > 0)) return;
+  const line = cart.find(c => c.id === item.id);
+  if ((line ? line.qty : 0) + qty > item.qty) {
+    alert(`Only ${item.qty} of "${item.name}" in stock.`);
+    return;
+  }
+  if (line) line.qty += qty;
+  else cart.push({id: item.id, name: item.name, price: item.price, cost: item.cost, qty});
+  $('saleQty').value = 1;
+  renderCart();
+};
+
+$('cartList').onclick = e => {
+  const b = e.target.closest('[data-remove]');
+  if (b) { cart.splice(Number(b.dataset.remove), 1); renderCart(); }
+};
+$('clearCart').onclick = () => { cart = []; renderCart(); };
+
+/* A transaction re-checks live stock, so two tills cannot sell the same last item. */
+$('checkout').onclick = () => {
+  if (!db) { alert('Connect Firebase first so your sale can be saved.'); return; }
+  if (!cart.length) { alert('Add at least one item to the cart first.'); return; }
+  const sale = {
+    at: Date.now(),
+    date: new Date().toLocaleString('en-KE'),
+    lines: cart.map(c => ({name: c.name, qty: c.qty})),
+    total: cart.reduce((s, c) => s + c.qty * c.price, 0),
+    profit: cart.reduce((s, c) => s + c.qty * (c.price - c.cost), 0)
+  };
+  const lines = cart.slice();
+  db.runTransaction(async tx => {
+    const snaps = await Promise.all(lines.map(c => tx.get(itemsCol.doc(c.id))));
+    snaps.forEach((s, i) => {
+      if (!s.exists || s.data().qty < lines[i].qty)
+        throw new Error(`Not enough stock left for "${lines[i].name}". Update the cart and try again.`);
+    });
+    lines.forEach(c => tx.update(itemsCol.doc(c.id), {qty: FV.increment(-c.qty)}));
+    tx.set(salesCol.doc(), sale);
+  }).then(() => { cart = []; renderCart(); })
+    .catch(err => alert(err.message));
+};
+
+$('clearSales').onclick = async () => {
+  if (!db || !sales.length || !confirm('Clear all sales history for every device?')) return;
+  const batch = db.batch();
+  sales.forEach(s => batch.delete(salesCol.doc(s.id)));
+  batch.commit().catch(onErr);
+};
+
+/* ---------- 8. One-time move of old data from this device ---------- */
+$('importBtn').onclick = async () => {
+  if (!db) return;
+  let oldSales = [];
+  try { oldSales = JSON.parse(localStorage.getItem('mm_sales')) || []; } catch (e) {}
+  const batch = db.batch();
+  localItems().forEach(({id, ...rest}) => batch.set(itemsCol.doc(), rest));
+  oldSales.forEach(({id, ...rest}) => batch.set(salesCol.doc(), {at: Date.parse(rest.date) || Date.now(), ...rest}));
+  try {
+    await batch.commit();
+    localStorage.removeItem('mm_items');
+    localStorage.removeItem('mm_sales');
+  } catch (e) { onErr(e); }
+};
+
+renderAll();
+startCloud();
+</script>
+</body>
+</html>

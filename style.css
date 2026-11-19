@@ -1,0 +1,335 @@
+/* Mama Mueni Supermarket - style.css */
+:root {
+  --green: #1f6b3a;
+  --green-dark: #154d29;
+  --green-soft: #e4f1e8;
+  --sun: #f2b705;
+  --sun-soft: #fff4cc;
+  --tomato: #c8402f;
+  --tomato-soft: #fbe4e0;
+  --ink: #16221b;
+  --muted: #5d6b62;
+  --line: #d9e0db;
+  --paper: #fbfcfa;
+  --white: #ffffff;
+  --radius: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+h1, h2, h3 {
+  font-family: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+  line-height: 1.15;
+  margin: 0;
+}
+
+h2 { font-size: 1.6rem; margin-bottom: 1rem; }
+h3 { font-size: 1.15rem; margin-bottom: .75rem; }
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  background: var(--green);
+  color: var(--white);
+  border-bottom: 6px solid var(--sun);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand { display: flex; align-items: center; gap: .85rem; }
+.brand h1 { font-size: 1.5rem; font-weight: 800; }
+.brand p { margin: 0; font-size: .9rem; opacity: .85; }
+
+/* Price-tag style logo mark */
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  background: var(--sun);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  border-radius: 4px 14px 4px 14px;
+}
+
+nav { display: flex; flex-wrap: wrap; gap: .25rem; }
+nav a {
+  color: var(--white);
+  text-decoration: none;
+  padding: .45rem .8rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+nav a:hover, nav a:focus-visible { background: rgba(255,255,255,.18); }
+
+/* ---------- Layout ---------- */
+main {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 1rem clamp(1rem, 4vw, 2rem) 3rem;
+}
+
+section { padding: 2rem 0 1rem; scroll-margin-top: 6rem; }
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.section-head h2 { margin-bottom: 0; }
+
+/* ---------- Dashboard ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.stat {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--green);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+.stat span { display: block; font-size: .85rem; color: var(--muted); }
+.stat strong {
+  display: block;
+  margin-top: .25rem;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.35rem;
+}
+.stat.warn { border-left-color: var(--tomato); }
+.stat.good { border-left-color: var(--sun); }
+
+/* ---------- Controls ---------- */
+label {
+  display: block;
+  margin: .8rem 0 .3rem;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+input, select {
+  width: 100%;
+  padding: .65rem .75rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--white);
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+}
+input:focus, select:focus, button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
+  border-color: var(--green);
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  padding: .65rem 1.2rem;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--green); color: var(--white); }
+.btn.primary:hover { background: var(--green-dark); }
+.btn.ghost { background: transparent; color: var(--green); border-color: var(--green); }
+.btn.ghost:hover { background: var(--green-soft); }
+
+.link {
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  background: none;
+  border: 0;
+  padding: .2rem .35rem;
+  color: var(--green);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.link:hover { color: var(--green-dark); }
+.link.danger { color: var(--tomato); }
+
+/* ---------- Tables ---------- */
+.table-wrap {
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+table { width: 100%; border-collapse: collapse; min-width: 760px; }
+th, td { padding: .75rem .9rem; text-align: left; border-bottom: 1px solid var(--line); }
+th {
+  background: var(--green-soft);
+  font-size: .88rem;
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #f6faf7; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.actions { white-space: nowrap; }
+
+.badge {
+  display: inline-block;
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.badge.ok { background: var(--green-soft); color: var(--green-dark); }
+.badge.low { background: var(--sun-soft); color: #7a5a00; }
+.badge.out { background: var(--tomato-soft); color: var(--tomato); }
+
+.empty, .muted { color: var(--muted); padding: 1rem 0; }
+
+/* ---------- Sales ---------- */
+.sale-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.panel .btn { margin-top: 1rem; }
+
+.cart { list-style: none; margin: 0; padding: 0; }
+.cart li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .6rem 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 1rem;
+  padding: .75rem 1rem;
+  background: var(--sun-soft);
+  border-radius: 8px;
+}
+.total-row strong {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.5rem;
+}
+
+.row-actions { display: flex; justify-content: flex-end; gap: .75rem; }
+
+/* ---------- Dialog ---------- */
+dialog {
+  width: min(460px, 92vw);
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+}
+dialog::backdrop { background: rgba(22, 34, 27, .55); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.error {
+  margin: .75rem 0 0;
+  padding: .6rem .8rem;
+  background: var(--tomato-soft);
+  color: var(--tomato);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--white);
+  background: var(--green-dark);
+}
+footer p { margin: 0; }
+
+[hidden] { display: none !important; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px) {
+  .toolbar, .sale-grid { grid-template-columns: 1fr; }
+  .topbar { position: static; }
+  h2 { font-size: 1.35rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+/* ---------- Cloud sync ---------- */
+.sync {
+  font-size: .85rem;
+  font-weight: 700;
+  padding: .3rem .8rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.15);
+}
+.sync::before {
+  content: "";
+  display: inline-block;
+  width: .55rem;
+  height: .55rem;
+  margin-right: .45rem;
+  border-radius: 50%;
+  background: var(--sun);
+}
+.sync.on::before { background: #7ee2a0; }
+.sync.off::before { background: var(--tomato); }
+
+.banner {
+  padding: .8rem clamp(1rem, 4vw, 3rem);
+  background: var(--tomato-soft);
+  color: var(--tomato);
+  font-weight: 700;
+  border-bottom: 1px solid var(--tomato);
+}
+
+.import {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--sun-soft);
+  border-radius: var(--radius);
+}
+.import p { margin: 0 0 .75rem; font-weight: 500; }
